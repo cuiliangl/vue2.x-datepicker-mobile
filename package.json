@@ -1,0 +1,18 @@
+{
+  "name": "vue datepicker",
+  "version": "1.0.0",
+  "description": "vue2.x datepicker mobile",
+  "main": "index.js",
+  "dependencies": {},
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "vue2.x-datepicker",
+     "vue-datepicker", 
+     "vue-datepicker-mobile"
+  ],
+  "author": "cuiliangliang",
+  "license": "ISC"
+}
