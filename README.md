@@ -6,7 +6,7 @@
 
 ## Usage
 ```html
- <date-picker @getDateValue="getDateValue" :showDatePicker="show"></date-picker>
+ <date-picker @getDateValue="getDateValue" :showDatePicker.sync="show"></date-picker>
 ```
 
 ### props属性说明
@@ -20,7 +20,7 @@
 |minMonth|Number, String|false|最小月份，前提是年必须是当前年|最小月|
 |minDay|Number, String|false|最小日，前提是最小年和最小月|最小日|
 |minHours|Number, String|false|最小时，前提是最小年和最小月、最小日|最大年份|
-|defaultValue|Array|false|[2018, 5, 4, 12]|默认值|
+|defaultValue|Array|false|[当前年、月、日、时]|默认值|
 
 
 ### Method
@@ -34,7 +34,6 @@
 // 自定义事件
 getDateValue(value) {
     // value 为数组，每一项分别对应 年、月、日、时
-    this.show = false;
     this.dateValue = value;
 }
 ```

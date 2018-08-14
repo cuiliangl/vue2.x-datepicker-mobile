@@ -223,6 +223,7 @@
         },
         methods: {
             closeDatePicker() {
+                this.$emit('update:showDatePicker', false);
                 this.$emit('getDateValue', this.dateValue);
             },
 
