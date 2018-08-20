@@ -223,8 +223,12 @@
         },
         methods: {
             closeDatePicker() {
+                let inceptiondate = this.dateValue.map(item => {
+                    item = parseInt(item);
+                    return item >= 10 ? item : '0' + item;
+                });
                 this.$emit('update:showDatePicker', false);
-                this.$emit('getDateValue', this.dateValue);
+                this.$emit('getDateValue', inceptiondate);
             },
 
             // 根据type调用相应的方法
