@@ -81,7 +81,7 @@
              **/
             type: {
                 type: String,
-                default: 'Y-M-D-H'
+                default: 'Y-M-D'
             },
             title: {
                 type: String,
@@ -174,10 +174,7 @@
                 let minMonthVal = parseInt(this.minMonthVal, 10);
 
                 for (let i = minMonthVal; i <= 12; i++) {
-                    if (i < 10) {
-                        i = '0' + i;
-                    }
-                    monthList.push(i);
+                    monthList.push(`0${i}`.slice(-2));
                 }
 
                 return monthList;
@@ -189,10 +186,7 @@
 
                 if (this.type === 'Y-M-D' || this.type === 'M-D' || this.type === 'Y-M-D-H') {
                     for (let i = minDayVal; i <= totalDay; i++) {
-                        if (i < 10) {
-                            i = '0' + i;
-                        }
-                        dayList.push(i);
+                        dayList.push(`0${i}`.slice(-2));
                     }
                 }
 
@@ -204,10 +198,7 @@
 
                 if (this.type === 'Y-M-D-H') {
                     for (let i = minHoursVal; i < 24; i++) {
-                        if (i < 10) {
-                            i = '0' + i
-                        }
-                        hoursList.push(i);
+                        hoursList.push(`0${i}`.slice(-2));
                     }
                 }
 
@@ -227,6 +218,7 @@
                     item = parseInt(item);
                     return item >= 10 ? item : '0' + item;
                 });
+
                 this.$emit('update:showDatePicker', false);
                 this.$emit('getDateValue', inceptiondate);
             },
@@ -255,7 +247,7 @@
             // 获取每月对应的天数
             getTotalDay() {
                 let {month, year, isLeap} = this;
-                let currentMonth = parseInt(month) < 10 ? '0' + parseInt(month) : String(month);
+                let currentMonth = `0${month}`.slice(-2);
 
                 if (currentMonth === '01' ||
                     currentMonth === '03' ||
@@ -289,47 +281,47 @@
 
                 let [year, month, day, hours] = this.dateValue.map(item => parseInt(item, 10));
                 let {minYearVal, minMonthVal, minDayVal, minHoursVal, totalDay, type, hoursIndex} = this;
-                let initMinYear = parseInt(minYearVal, 10);
-                let initMinMonth = parseInt(minMonthVal, 10);
-                let initMinDay = parseInt(minDayVal, 10);
-                let initMinHours = parseInt(minHoursVal, 10);
+                let intMinYear = parseInt(minYearVal, 10);
+                let intMinMonth = parseInt(minMonthVal, 10);
+                let intMinDay = parseInt(minDayVal, 10);
+                let intMinHours = parseInt(minHoursVal, 10);
 
                 // 因为相减，所以不需要转Number类型
 
-                this.yearIndex = year - initMinYear;
+                this.yearIndex = year - intMinYear;
 
                 // 当年回到最小年并且月小于最小月时，index为0
-                if (year <= initMinYear && month <= initMinMonth) {
+                if (year <= intMinYear && month <= intMinMonth) {
                     this.monthIndex = 0;
-                    this.month = initMinMonth < 10 ? '0' + initMinMonth : initMinMonth;
+                    this.month = `0${intMinMonth}`.slice(-2);
                     this.dateValue[1] = this.month;
                 }
                 else {
-                    this.monthIndex = month - initMinMonth;
+                    this.monthIndex = month - intMinMonth;
                 }
 
                 // 避免出现 选中的是8月31日，在切换到6月时，出现空位现象。因为6月为30天，2月29/28天
-                if (year <= initMinYear && day <= initMinDay) {
+                if (year <= intMinYear && day <= intMinDay) {
                     this.dayIndex = 0;
-                    this.day = initMinDay < 10 ? '0' + initMinDay : initMinDay;
+                    this.day = `0${intMinDay}`.slice(-2);
                     this.dateValue[2] = this.day;
                 }
                 else if (totalDay < day) {
-                    this.dayIndex = day - initMinDay - (day - totalDay);
+                    this.dayIndex = day - intMinDay - (day - totalDay);
                 }
                 else {
-                    this.dayIndex = day - initMinDay;
+                    this.dayIndex = day - intMinDay;
                 }
 
                 if (type === 'Y-M-D-H') {
                     let startHours = hours - minHoursVal;
 
-                    if (year <= initMinYear && month <= initMinMonth && day <= initMinDay && startHours < 0) {
+                    if (year <= intMinYear && month <= intMinMonth && day <= intMinDay && startHours < 0) {
                         this.hoursIndex = 0;
-                        this.hours = initMinHours < 10 ? '0' + initMinHours : initMinHours;
+                        this.hours = `0${intMinHours}`.slice(-2);
                         this.dateValue[3] = this.hours;
                     }
-                    else if (year <= initMinYear && month <= initMinMonth && day > initMinDay && startHours < 0) {
+                    else if (year <= intMinYear && month <= intMinMonth && day > intMinDay && startHours < 0) {
                         this.hoursIndex = hoursIndex;
                     }
                     else {
@@ -340,7 +332,8 @@
 
             // 是否为闰年
             isLeap(year) {
-                if ((year % 4 === 0 && year % 100 !== 0) || (year % 400 === 0)) {
+                if ((!(year % 4) && (year % 100))
+                    || !(year % 400)) {
                     return true;
                 }
                 return false;
@@ -441,6 +434,10 @@
             }
         },
         watch: {
+            // 默认值可能是接口异步返回
+            defaultValue(val) {
+                this.dateValue = val;
+            },
             year(val) {
                 let curYear = parseInt(val, 10);
                 let {minYear, month, minMonth, day, minDay, minHours, type} = this;
@@ -546,7 +543,7 @@
             bottom: (-680px);
             left: 0;
             right: 0;
-            transition: all .3s;
+            transition: bottom .2s ease;
             color: #333;
             header {
                 overflow: hidden;
@@ -593,7 +590,7 @@
                     li {
                         height: (86px);
                         line-height: (86px);
-                        font-size: (40px);
+                        font-size: (36px);
                         color: #2A2B2C;
                         padding: 0 (10px) !important;
                         margin: 0!important;
